@@ -1,0 +1,16 @@
+{
+  "name": "diffrn-prototype",
+  "version": "0.0.0",
+  "license": "EMBL-EBI",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "iron-ajax": "polymerelements/iron-ajax#^2.0.2"
+  }
+}

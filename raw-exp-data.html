@@ -1,0 +1,217 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="raw-exp-data">
+  <template>
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/pdbe/entry/static/css/ebi-core.min.css">
+    <link rel="stylesheet" href="https://www.ebi.ac.uk/pdbe/entry/static/bundle-pdbe-ui_head.min.css">
+    <style>
+        :host {
+            display: block;
+        }
+        .diffrn-thumbnail {
+            width: 150px;
+            max-width: 90%;
+        }
+    </style>
+
+    <template is="dom-if" if="{{dataExists(data, dataAlt, dataEm)}}">
+        <div class="panel-separator" style="height: 18px;"></div>
+        <div class="shortcuts">
+            <div class="clearfix  hide_in_print">
+                <h3 class="pane-title">Experimental raw data</h3>
+                <div class="pane-content pdbe_quick_links">
+                    <template is="dom-if" if="{{data.doi}}" style="padding-bottom: 15px;">
+                        <div class="container_pdbe" style="padding:6px">
+                            <p>Protein diffraction data related to PDB entry {{data.pdb_id}} found at the Integrated Resource for Reproducibility in Macromolecular Crystallography (IRRMC)</p>
+                            <div class="grid_24">
+                                <div class="grid_20">
+                                    <span>Data DOI:</span>
+                                    <a href="https://dx.doi.org/{{data.doi}}" target="_blank" data-icon="x">{{data.doi}}</a>
+                                    <a class="ext active" style="text-decoration:none;border:0;outline: 0;margin-left:5px" data-icon="x" href="https://dx.doi.org/{{data.doi}}" target="_blank" title="Go to IRRMC"></a>
+                                </div>
+                            </div>
+                            <div class="grid_24">
+                                <div class="grid_12">
+                                    <template is="dom-if" if="{{data.number_dataset}}">
+                                        <span>Number of sets:</span>
+                                        {{data.number_dataset}}
+                                        <br>
+                                    </template>
+                                    <template is="dom-if" if="{{data.total_size_gb}}">
+                                        <span>Total size:</span>
+                                        {{data.total_size_gb}}Gb
+                                        <br>
+                                    </template>
+                                </div>
+                                <template is="dom-if" if="{{data.thumbnail_url}}">
+                                    <div class="grid_12">
+                                        <a href="https://dx.doi.org/{{data.doi}}" target="_blank">
+                                            <img class="diffrn-thumbnail" src="https://{{data.thumbnail_url}}" alt="Protein diffraction thumbnail">
+                                        </a>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <hr>
+                    </template>
+                    <template is="dom-if" if="{{lengthCheck(dataAlt.datasets)}}">
+                        <div class="container_pdbe" style="padding:6px">
+                            <p>Protein diffraction data related to PDB entry {{data.pdb_id}} found at the SBGrid Data Bank</p>
+                            <template is="dom-repeat" items="{{dataAlt.datasets}}">
+                                <template is="dom-if" if="{{item.data_doi}}">
+                                    <div class="grid_24">
+                                        <div class="grid_20">
+                                            <span>Data DOI:</span>
+                                            <a href="{{item.landing_page}}" target="_blank">{{item.data_doi}}</a>
+                                            <a class="ext active" style="text-decoration:none;border:0;outline: 0;margin-left:5px" data-icon="x" href="{{item.landing_page}}" target="_blank" title="Go to SBGrid Data Bank"></a>
+                                        </div>
+                                    </div>
+                                    <div class="grid_24">
+                                        <div class="grid_12">
+                                            <template is="dom-if" if="{{item.storage_requirements}}">
+                                                <span>Total size:</span>
+                                                {{processSizeData(item.storage_requirements)}}Gb
+                                                <br>
+                                            </template>
+                                        </div>
+                                        <template is="dom-if" if="{{item.dataset_thumbnail_url}}">
+                                            <div class="grid_12">
+                                                <a href="{{item.landing_page}}" target="_blank">
+                                                    <img class="diffrn-thumbnail" src="{{item.dataset_thumbnail_url}}" alt="Protein diffraction thumbnail">
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                        <hr>
+                    </template>
+                    <template is="dom-if" if="{{lengthCheck(dataEm)}}">
+                        <div class="container_pdbe" style="padding:6px">
+                            <p>Electron microscopy data related to PDB entry {{data.pdb_id}} found at the Electron Microscopy Public Image Archive (EMPIAR)</p>
+                            <template is="dom-repeat" items="{{dataEm}}">
+                                <template is="dom-if" if="{{item.doi}}">
+                                    <div class="grid_24">
+                                        <div class="grid_20">
+                                            <span>Data DOI:</span>
+                                            <a href="https://dx.doi.org/{{item.doi}}" target="_blank">{{item.doi}}</a><a class="ext active" style="text-decoration:none;border:0;outline:0" data-icon="x" href="https://dx.doi.org/{{item.doi}}" target="_blank" title="Go to EMPIAR"></a>
+                                        </div>
+                                    </div>
+                                    <div class="grid_24" style="padding-bottom:15px;">
+                                        <div class="grid_12">
+                                            <template is="dom-if" if="{{item.total_size_gb}}">
+                                                <span>Number of datasets:</span>
+                                                {{item.number_dataset}}
+                                                <br>
+                                            </template>
+                                            <template is="dom-if" if="{{item.total_size_gb}}">
+                                                <span>Total size:</span>
+                                                {{item.total_size_gb}}Gb
+                                                <br>
+                                            </template>
+                                        </div>
+                                        <template is="dom-if" if="{{item.thumbnail_url}}">
+                                            <div class="grid_12">
+                                                <a href="https://dx.doi.org/{{item.doi}}" target="_blank">
+                                                    <img class="diffrn-thumbnail" src="{{item.thumbnail_url}}" alt="EMPIAR thumbnail">
+                                                </a>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <iron-ajax
+        id="diffrn_data"
+        url="https://proteindiffraction.org/api/ebi/{{pdbid}}"
+        params='{"type":"all"}'
+        handle-as="json"
+        on-response="handleResponse">
+    </iron-ajax>
+
+    <iron-ajax
+        id="diffrn_data_alt"
+        url="https://data.sbgrid.org/api/pdbe/{{pdbid}}"
+        params='{"type":"all"}'
+        handle-as="json"
+        on-response="handleResponseAlt">
+    </iron-ajax>
+
+    <iron-ajax
+        id="em_data"
+        url="https://wwwdev.ebi.ac.uk/pdbe/emdb/empiar/api/pdb_ref/{{pdbid}}"
+        params='{"type":"all"}'
+        handle-as="json"
+        on-response="handleResponseEm">
+    </iron-ajax>
+
+  </template>
+
+  <script>
+    Polymer({
+        is: 'raw-exp-data',
+        properties: {
+            pdbid: String,
+            data: {
+                type: Object
+            },
+            dataAlt: {
+                type: Object
+            },
+            dataEm: {
+                type: Object
+            }
+        },
+        ready: function () {
+            this.pdbid = this.pdbid.toLowerCase();
+            this.$.diffrn_data.generateRequest();
+            this.$.diffrn_data_alt.generateRequest();
+            this.$.em_data.generateRequest();
+        },
+        handleResponse: function (data) {
+            this.data = data.detail.response;
+        },
+        handleResponseAlt: function (data) {
+            this.dataAlt = data.detail.response;
+        },
+        handleResponseEm: function (data) {
+            this.dataEm = data.detail.response;
+        },
+        dataExists: function (data, dataAlt, dataEm){
+            if (data || dataAlt || dataEm) {
+                if (data){
+                    if (data.doi) {
+                        return true
+                    }
+                } else if (dataAlt) {
+                    if (dataAlt.datasets.length > 0) {
+                        return true
+                    }
+                }
+                if (dataEm.length > 0){
+                    return true
+                }
+            }
+            return false
+        },
+        lengthCheck: function(data) {
+            if (data.length > 0) {
+                return true
+            } else {
+                return false
+            }
+        },
+        processSizeData: function(data) {
+            return data.slice(0,data.indexOf("G"))
+        }
+    });
+  </script>
+</dom-module>
