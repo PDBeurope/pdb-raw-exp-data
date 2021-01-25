@@ -23,6 +23,16 @@ git clone https://github.com/PDBeurope/pdb-raw-exp-data.git
 <raw-exp-data style="max-width: 50%;" pdbid="4WEQ"></raw-exp-data>
 ```
 
+## Examples
+
+### Electron Microscopy example ([3J7N](https://pdbe.org/3J7N))
+
+<img src="https://github.com/PDBeurope/pdb-raw-exp-data/blob/master/em-example.jpg?raw=true">
+
+### Diffraction example ([4WEQ](https://pdbe.org/4WEQ))
+
+<img src="https://github.com/PDBeurope/pdb-raw-exp-data/blob/master/diffraction-example.jpg?raw=true">
+
 ## Authors
 
 * **Mihaly Varadi** - *Initial work* - [mvaradi](https://github.com/mvaradi)
